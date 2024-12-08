@@ -1,5 +1,6 @@
 import express from 'express';
 import statuscodes from 'http-status-codes';
+
 import { PORT } from './Config/serverConfig.js';
 
 const app = express();
