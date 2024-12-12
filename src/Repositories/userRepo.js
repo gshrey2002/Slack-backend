@@ -1,5 +1,5 @@
 import user from "../Schema/userSchema.js";
-import user from "../Schema/userSchema.js";
+// import user from "../Schema/userSchema.js";
 import crudRepo from "./crudRepo.js";
 
 const userRepository={
@@ -10,7 +10,7 @@ getByEmail:async function (email){
 
 },
 getByUsername:async function (username){
-    const user=await user.findOne({username});
+    const user=await user.findOne({username}).select("-password");
     return user;
 }, 
 }
