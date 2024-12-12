@@ -1,22 +1,18 @@
 import user from "../Schema/userSchema.js";
+import user from "../Schema/userSchema.js";
 import crudRepo from "./crudRepo.js";
 
-// export const getUserByEmail=async(email)=>{
-//     const User=await user.findOne({email});
-//     return User;
-// }
+const userRepository={
+...crudRepo(user),
+getByEmail:async function (email){
+    const user=await user.findOne({email});
+    return user;
 
-// export const getUserByName=async(name)=>{
-//     const User=await user.findOne({username:name});
-//     return User;
-// }
-
-// const crudMethod=crudRepo(user);
-
-// export default crudMethod;
-
-function newUserRepo(){
-    crudRepo.call(this,user);
+},
+getByUsername:async function (username){
+    const user=await user.findOne({username});
+    return user;
+}, 
 }
 
-export default new newUserRepo();
+export default userRepository
