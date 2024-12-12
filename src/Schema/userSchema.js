@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import bcrypt from "bcrypt"
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
     {
@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
             type:String,
             required:[true,"Email is required"],
             unique:[true,"Email already exists"],
+           // eslint-disable-next-line
             match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
 
         },
@@ -18,8 +19,10 @@ const userSchema = new mongoose.Schema(
         username:{
             type:String,
             required:[true,"Username is required"],
+            minLength:[4,"Username must be at least 4 characters long"],
             unique:[true,"Username already exists"],
             match:[/^[a-zA-Z0-9]+$/, 'Please fill a valid username'],
+            
         },
         avatar:{
             type:String
@@ -32,7 +35,7 @@ const user=this;
 const SALT=bcrypt.genSaltSync(9);
 const hasedPassword=bcrypt.hashSync(user.password,SALT);  
 user.password=hasedPassword;
- user.avatar=`https://robohash.org/${user.username}.png`;
+ user.avatar=`https://robohash.org/${user.username}`;
  next();
 });
 

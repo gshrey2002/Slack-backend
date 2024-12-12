@@ -1,4 +1,5 @@
 import express from "express";
+
 import { signUpController } from "../../Controller/userController.js";
 
 const router=express.Router();
