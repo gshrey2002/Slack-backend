@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 class validationError extends Error {
     constructor(errorDetails,message) {
         super(message);
-        this.name = "validation error";
+        this.name = "ValidationError";
         let explanation = []
         Object.keys(errorDetails.error).forEach(key => {
             explanation.push(errorDetails.error[key])
