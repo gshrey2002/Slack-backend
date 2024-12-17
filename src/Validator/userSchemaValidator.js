@@ -4,3 +4,8 @@ export const userSchemaValidator=z.object({
     password:z.string().min(8),
     username:z.string().min(4),
 })
+
+export const userSignInValidator=z.object({
+    email:z.string().email(),
+    password:z.string().min(8)
+})

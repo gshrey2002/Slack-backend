@@ -5,13 +5,13 @@ import crudRepo from "./crudRepo.js";
 const userRepository={
 ...crudRepo(user),
 getByEmail:async function (email){
-    const user=await user.findOne({email});
-    return user;
+    const User=await user.findOne({email});
+    return User;
 
 },
 getByUsername:async function (username){
-    const user=await user.findOne({username}).select("-password");
-    return user;
+    const User=await user.findOne({username}).select("-password");
+    return User;
 }, 
 }
 

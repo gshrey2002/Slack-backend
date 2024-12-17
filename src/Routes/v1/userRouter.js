@@ -1,8 +1,8 @@
 import express from "express";
 
-import { signUpController } from "../../Controller/userController.js";
+import { signInController, signUpController } from "../../Controller/userController.js";
+import { userSchemaValidator,userSignInValidator } from "../../Validator/userSchemaValidator.js";
 import { validate } from "../../Validator/zodValidator.js";
-import { userSchemaValidator } from "../../Validator/userSchemaValidator.js";
 
 const router=express.Router();
 
@@ -11,5 +11,6 @@ router.get('/hello', (req, res) => {
 });
 
 router.post('/signup', validate(userSchemaValidator),signUpController)
+router.post('/signin',validate(userSignInValidator),signInController)
 
 export default router;

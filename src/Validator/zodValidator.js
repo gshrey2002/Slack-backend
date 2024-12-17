@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
+
+// import { object } from "zod";
 import { customErrorResponse } from "../common/customResponse.js";
-import { object } from "zod";
 
 export const validate=(schema)=>{
     return async (req,res,next)=>{
