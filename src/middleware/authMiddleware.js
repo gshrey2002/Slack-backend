@@ -1,41 +1,61 @@
 import { StatusCodes } from "http-status-codes";
-import { customErrorResponse } from "../common/customResponse";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../Config/serverConfig";
-import userRepository from "../Repositories/userRepo";
 
+import { customErrorResponse, internalErrorResponse } from "../common/customResponse.js";
+import { JWT_SECRET } from "../Config/serverConfig.js";
+import userRepository from "../Repositories/userRepo.js";
 
 export const isAuthenticated = async (req, res, next) => {
-try {
-    const token=req.headers[x-access-token];
-    if(!token){
-    return res.status(StatusCodes.FORBIDDEN).json(customErrorResponse({
-        explanation:"invalid data sent from client",
-        message:"Token not found",
-    }))
+  try {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        customErrorResponse({
+          explanation: "Invalid data sent from client",
+          message: "Token not found",
+        })
+      );
     }
-    const verifyToken=jwt.verify(token,JWT_SECRET);
-    if(!verifyToken){
-        return res.status(StatusCodes.FORBIDDEN).json(customErrorResponse({
-            explanation:"invalid data sent from client",
-            message:"invalid Token found",
-        }))
+
+    // Verify the token
+    const verifyToken = jwt.verify(token, JWT_SECRET);
+    if (!verifyToken) {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        customErrorResponse({
+          explanation: "Invalid data sent from client",
+          message: "Invalid token found",
+        })
+      );
     }
-    const user=await userRepository.getById(verifyToken.id);
-    req.user=user.id;
+
+    // Find user and attach to request object
+    const user = await userRepository.getById(verifyToken.id);
+    req.user = user.id;
     next();
-} catch (error) {
-     console.log("auth middleware error",error);
-     if(error.name==="JsonWebTokenError"){
-        return res.status(StatusCodes.FORBIDDEN).json(customErrorResponse({
-            explanation:"invalid data sent from client",
-            message:"invalid Token found",
-        }))
-     }
+  } catch (error) {
+    console.log("Auth middleware error:", error);
 
-return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalErrorResponse(error));
+    // Handle expired token error
+    if (error.name === "TokenExpiredError") {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        customErrorResponse({
+          explanation: "Token has expired",
+          message: "Expired token",
+        })
+      );
+    }
 
-}
+    // Handle invalid token error
+    if (error.name === "JsonWebTokenError") {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        customErrorResponse({
+          explanation: "Invalid data sent from client",
+          message: "Invalid token",
+        })
+      );
+    }
 
-
-}
+    // Handle all other errors
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalErrorResponse(error));
+  }
+};
